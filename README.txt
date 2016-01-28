@@ -63,7 +63,7 @@ This is the website portion of the LoansBot. It is created from an API perspecti
       Cookies: PHPSESSID
       Params:
         format                        - Either 0 (ultra-compact), 1 (compact), 2 (standard), or 3 (extended). Default 2 (standard)
-        limit                     - Limits the number of results. Default 10 to ensure expensive queries are intended. 0 for no limit.
+        limit                         - Limits the number of results. Default 10 to ensure expensive queries are intended. 0 for no limit.
         
         
         id                            - The id of the loan. Default 0 (ignore)
@@ -101,9 +101,44 @@ This is the website portion of the LoansBot. It is created from an API perspecti
         
       Result: 
         Results/Failure, Results/Loans/UltraCompact, Results/Loans/Compact, Results/Loans/Standard, Results/Loans/Extended
+        
+    users.php -
+      Allows the user to fetch user information
+      
+      Type: GET 
+      Cookies: PHPSESSID
+      Params:
+        format      - Either 0 (ultra-compact), 1 (compact), 2 (standard), or 3 (extended). Default 2 (standard).
+        limit       - Limits the number of results. Default 10, 0 for no limit.
+        
+        
+        id          - The id of the user. Default 0 (ignore)
+        username    - The username of the user. Default "" (ignore)
+                      CANNOT be used with id
+        after_time  - UTC Timestamp (MS) that the users should come after. Default 0 (ignore)
+        before_time - UTC Timestamp (MS) that the users should come before. Default 0 (ignore)
+      
+      Result:
+        Results/Failure, Results/Users/UltraCompact, Results/Users/Compact, Results/Users/Standard, Results/Users/Extended
+        
+    usernames.php -
+      Allows the user to fetch username information
+      
+      Type: GET
+      Cookies: PHPSESSID
+      Params:
+        format  - Either 0 (ultra-compact), 1 (compact), or 2 (standard). Default 2 (standard).
+        limit   - Limits the number of results. Default 10, 0 for no limit.
+        
+        id      - The id of the username. Default 0 (ignore)
+        user_id - The id of the user. Default 0 (ignore).
+        
+      Result:
+        Results/Failure, Results/Usernames/UltraCompact, Results/Usernames/Compact, Results/Usernames/Standard
 Results
   This describes the types of things that the api returns.
   Note that for UTC Timestamps, they may be null.
+  Note that when usernames are fetched via "extended" formats, only the first username is retrieved.
   
   Success -
     This signifies the operation was successful.
@@ -220,7 +255,8 @@ Results
               "new_deleted_reason": "<new_deleted_reason>",
               "new_updated_at": <new_updated_at>,
               "new_deleted_at": <new_deleted_at>
-            }
+            },
+            ...
           ]
         }
         
@@ -229,19 +265,155 @@ Results
       
       Response Code: 200 OK
       Response Json Object:
-        Let <lender_name> be the username of the lender, such as "reddituser123".
-        Let <borrower_name> be the username of the borrower, such as "reddituser123".
-        Let <new_lender_name> be the new username of the lender, such as "reddituser123". Only included if there was a modification to some part of the loan.
-        Let <new_borrower_name> be the new username of the borrower, such as "reddituser123". Only included if there was a modification to some part of the loan.
+        Let <lender_name> be a username of a lender, such as "reddituser123".
+        Let <borrower_name> be a username of a borrower, such as "reddituser123".
+        Let <new_lender_name> be a new username of a lender, such as "reddituser123". Only included if there was a modification to some part of the loan.
+        Let <new_borrower_name> be a new username of a borrower, such as "reddituser123". Only included if there was a modification to some part of the loan.
         
         {
           "result_type": 5,
           "success": true,
           "loans": [
-            (everything from Standard)
-            "lender_name": "<lender_name>",
-            "borrower_name": "<borrower_name>",
-            "new_lender_name": "<new_lender_name>",
-            "new_borrower_name": "<new_borrower_name>"
+            {
+              (everything from Standard)
+              "lender_name": "<lender_name>",
+              "borrower_name": "<borrower_name>",
+              "new_lender_name": "<new_lender_name>",
+              "new_borrower_name": "<new_borrower_name>"
+            },
+            ...
           ]
         }
+        
+  Users -
+    Let <user_id> be a id of a user, such as 736 or 28.
+    Let <claimed> be a boolean such as true or false.
+    Let <created_at> be a utc timestamp in milliseconds such as 1454004926439 or null.
+    Let <updated_at> be a utc timestamp in milliseconds such as 1454004926439 or null.
+    
+    Let <email> be an email of a user, such as "johndoe@gmail.com". This is only returned for yourself or if you are a moderator.
+    Let <name> be the name of a user, such as "John Doe". This is only returned for yourself or if you are a moderator.
+    Let <street_address> be the street address of a user, such as "1600 Pennsylvania Avenue NW". This is only returned for yourself or if you are a moderator.
+    Let <city> be the city of a user, such as "Washington D.C.". This is only returned for yourself or if you are a moderator.
+    Let <state> be the state of a user, such as "Washington D.C." or "N/A". This is only returned for yourself or if you are a moderator.
+    Let <zip> be the zip of a user, such as "20500". This is only returned for yourself or if you are a moderator.
+    Let <country> be the country of a user, such as "United States" or "U.S.". This is only returned for yourself or if you are a moderator.
+    
+    UltraCompact -
+      This is returned from api/users.php with the format 0. This contains just a list of user ids, with no additional information.
+      
+      Response Code: 200 OK
+      Response Json Object:
+        {
+          "result_type": 6,
+          "success": true,
+          "users": [<user_id>, <user_id>, ...]
+        }
+        
+    Compact -
+      This is returned from api/users.php with the format 1. This contains all information about the user, but uses arrays to reduce return size and reduce parsing time.
+      
+      Response Code: 200 OK
+      Response Json Object: 
+        {
+          "result_type": 7,
+          "success": true,
+          "users": [
+            [<user_id>, <claimed>, <created_at>, <updated_at>, "<email>", "<street_address>", "<city>", "<state>", "<zip>", "<country>"],
+            ...
+          ]
+        }
+        
+    Standard -
+      This is returned from api/users.php with the format 3. This contains all information about the user in a human-readable format. 
+      
+      Response Code: 200 OK
+      Response Json Object:
+        {
+          "result_type": 8,
+          "success": true,
+          "users": [
+            {
+              "user_id": <user_id>,
+              "claimed": <claimed>,
+              "created_at": <created_at>,
+              "updated_at": <updated_at>,
+              "email": "<email>",
+              "street_address": "<street_address>",
+              "city": "<city>",
+              "state": "<state>",
+              "zip": "<zip>",
+              "country": "<country>"
+            }
+          ]
+        }
+        
+    Extended - 
+      This is returned from api/users.php with the format 3. This contains all information about the user as well as his username in a human-readable format. 
+      
+      Response Code: 200 OK
+      Response Json Object:
+        Let <username> be the username of the user, such as "reddituser123".
+        {
+          "result_type": 9,
+          "success": true,
+          "users": [
+            {
+              (everything from Standard)
+              "username": "<username>"
+            },
+            ...
+          ]
+        }
+        
+  Usernames -
+    Let <username_id> be an id of a username, such as 57 or 192.
+    Let <username> be a username of a user, such as "reddituser123".
+    Let <user_id> be the id of a user, such as 736 or 28. 
+    Let <created_at> be a utc timestamp in milliseconds such as 1454004926439 or null.
+    Let <updated_at> be a utc timestamp in milliseconds such as 1454004926439 or null.
+    
+    UltraCompact -
+      This is returned from api/usernames.php with the format 0. This contains just a list of username ids, with no additional information.
+      
+      Response Code: 200 OK
+      Response Json Object:
+        {
+          "result_type": 10,
+          "success": true,
+          "usernames": [<username_id>, <username_id>, ...]
+        }
+        
+    Compact -
+      This is returned from api/usernames.php with the format 1. This contains all information about the username, but uses arrays to reduce return size and reduce parsing time.
+      
+      Response Code: 200 OK
+      Response Json Object:
+        {
+          "result_type": 11,
+          "success": true,
+          "usernames": [
+            [<username_id>, "<username>", <user_id>, <created_at>, <updated_at>],
+            ...
+          ]
+        }
+    Standard - 
+      This is returned from api/usernames.php with the format 3. This contains all information about the username in a human-readable format. 
+      
+      Response Code: 200 OK
+      Response Json Object:
+        {
+          "result_type": 12,
+          "success": true,
+          "usernames": [
+            {
+              "username_id": <username_id>,
+              "username": "<username>",
+              "user_id": <user_id>,
+              "created_at": <created_at>,
+              "updated_at": <updated_at>
+            },
+            ...
+          ]
+        }
+  
