@@ -11,6 +11,9 @@ This is the website portion of the LoansBot. It is created from an API perspecti
     
   claim.php -
     Shows the appropriate form for claiming your account 
+    
+  sharecode.php -
+    Shows the appropriate forms for either creating your share code or using another share code.
   
   query.php -
     Main interaction with the database that is online
@@ -55,6 +58,27 @@ This is the website portion of the LoansBot. It is created from an API perspecti
         
       Result:
         Results/Success or Results/Failure 
+    
+    request_sharecode.php -
+      Allows the user to request a share code be created on his behalf.
+      
+      Type: POST
+      Params:
+        None
+      Result:
+        Results/ShareCode or Results/Failure 
+        
+    user_sharecode.php -
+      Allows the user to consume a share code 
+      
+      Type: POST
+      Params: 
+        format     - The format of the users to return. 0 (ultra-compact), 1 (compact), 2 (standard), or 3 (extended). Default 3 (extended)
+        share_code - The sharecode
+        username   - The username the sharecode belongs to
+        
+      Results:
+        Results/Users/UltraCompact, Results/Users/Compact, Results/Usernames/Standard, Results/Users/Extended, or Results/Failure 
         
     loans.php - 
       Allows the user to fetch loan information.
@@ -146,7 +170,7 @@ Results
     Response Code: 200 OK
     Response Json Object: 
       {
-        "result_type": 0
+        "result_type": "SUCCESS",
         "success": true
       }
   
@@ -159,7 +183,7 @@ Results
       Let <error_identifier> be a string that will not change when the details of the error message change, such as "NOT_LOGGED_IN", or "ACCOUNT_NOT_FOUND".
       
         {
-          "result_type": 1,
+          "result_type": "FAILURE",
           "success": false,
           "errors": [
             {
@@ -174,6 +198,8 @@ Results
           ]
         }
   
+  ShareCode - 
+    This signifies a share code was created 
   Loans -
     Let <loan_id> be a loan id, such as 500 or 36.
     Let <lender_id> be a user id such as 736 or 28. In the event of a modification, this is the original value.
@@ -202,7 +228,7 @@ Results
       Response Code: 200 OK 
       Response Json Object:
         {
-          "result_type": 2,
+          "result_type": "LOANS_ULTRACOMPACT",
           "success": true,
           "loans": [
             <loan_id>,
@@ -216,7 +242,7 @@ Results
       Response Code: 200 OK
       Response Json Object:
         {
-          "result_type": 3,
+          "result_type": "LOANS_COMPACT",
           "success": true,
           "loans": [
             [<loan_id>, <lender_id>, <borrower_id>, <principal_cents>, <principal_repayment_cents>, <unpaid>, <created_at>, <updated_at>, <deleted>, <deleted_at>, <deleted_reason>, 
@@ -231,7 +257,7 @@ Results
       Response Code: 200 OK
       Response Json Object:
         {
-          "result_type": 4,
+          "result_type": "LOANS_STANDARD",
           "success": true,
           "loans": [
             {
@@ -271,7 +297,7 @@ Results
         Let <new_borrower_name> be a new username of a borrower, such as "reddituser123". Only included if there was a modification to some part of the loan.
         
         {
-          "result_type": 5,
+          "result_type": "LOANS_EXTENDED",
           "success": true,
           "loans": [
             {
@@ -291,13 +317,13 @@ Results
     Let <created_at> be a utc timestamp in milliseconds such as 1454004926439 or null.
     Let <updated_at> be a utc timestamp in milliseconds such as 1454004926439 or null.
     
-    Let <email> be an email of a user, such as "johndoe@gmail.com". This is only returned for yourself or if you are a moderator.
-    Let <name> be the name of a user, such as "John Doe". This is only returned for yourself or if you are a moderator.
-    Let <street_address> be the street address of a user, such as "1600 Pennsylvania Avenue NW". This is only returned for yourself or if you are a moderator.
-    Let <city> be the city of a user, such as "Washington D.C.". This is only returned for yourself or if you are a moderator.
-    Let <state> be the state of a user, such as "Washington D.C." or "N/A". This is only returned for yourself or if you are a moderator.
-    Let <zip> be the zip of a user, such as "20500". This is only returned for yourself or if you are a moderator.
-    Let <country> be the country of a user, such as "United States" or "U.S.". This is only returned for yourself or if you are a moderator.
+    Let <email> be an email of a user, such as "johndoe@gmail.com". This is only returned for yourself, with a sharecode, or if you are a moderator.
+    Let <name> be the name of a user, such as "John Doe". This is only returned for , with a sharecode, or if you are a moderator.
+    Let <street_address> be the street address of a user, such as "1600 Pennsylvania Avenue NW". This is only returned for yourself, with a sharecode, or if you are a moderator.
+    Let <city> be the city of a user, such as "Washington D.C.". This is only returned for yourself, with a sharecode, or if you are a moderator.
+    Let <state> be the state of a user, such as "Washington D.C." or "N/A". This is only returned for yourself, with a sharecode, or if you are a moderator.
+    Let <zip> be the zip of a user, such as "20500". This is only returned for yourself, with a sharecode, or if you are a moderator.
+    Let <country> be the country of a user, such as "United States" or "U.S.". This is only returned for yourself, with a sharecode, or if you are a moderator.
     
     UltraCompact -
       This is returned from api/users.php with the format 0. This contains just a list of user ids, with no additional information.
@@ -305,7 +331,7 @@ Results
       Response Code: 200 OK
       Response Json Object:
         {
-          "result_type": 6,
+          "result_type": "USERS_ULTRACOMPACT",
           "success": true,
           "users": [<user_id>, <user_id>, ...]
         }
@@ -316,7 +342,7 @@ Results
       Response Code: 200 OK
       Response Json Object: 
         {
-          "result_type": 7,
+          "result_type": "USERS_COMPACT",
           "success": true,
           "users": [
             [<user_id>, <claimed>, <created_at>, <updated_at>, "<email>", "<street_address>", "<city>", "<state>", "<zip>", "<country>"],
@@ -330,7 +356,7 @@ Results
       Response Code: 200 OK
       Response Json Object:
         {
-          "result_type": 8,
+          "result_type": "USERS_STANDARD",
           "success": true,
           "users": [
             {
@@ -355,7 +381,7 @@ Results
       Response Json Object:
         Let <username> be the username of the user, such as "reddituser123".
         {
-          "result_type": 9,
+          "result_type": "USERS_EXTENDED",
           "success": true,
           "users": [
             {
@@ -379,7 +405,7 @@ Results
       Response Code: 200 OK
       Response Json Object:
         {
-          "result_type": 10,
+          "result_type": "USERNAMES_ULTRACOMPACT",
           "success": true,
           "usernames": [<username_id>, <username_id>, ...]
         }
@@ -390,7 +416,7 @@ Results
       Response Code: 200 OK
       Response Json Object:
         {
-          "result_type": 11,
+          "result_type": "USERNAMES_COMPACT",
           "success": true,
           "usernames": [
             [<username_id>, "<username>", <user_id>, <created_at>, <updated_at>],
@@ -403,7 +429,7 @@ Results
       Response Code: 200 OK
       Response Json Object:
         {
-          "result_type": 12,
+          "result_type": "USERNAMES_STANDARD",
           "success": true,
           "usernames": [
             {
