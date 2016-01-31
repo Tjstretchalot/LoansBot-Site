@@ -12,6 +12,10 @@ This is the website portion of the LoansBot. It is created from an API perspecti
   claim.php -
     Shows the appropriate form for claiming your account 
     
+    Optional Params (GET) to Auto-Fill Form:
+      user_id    - The user id to claim
+      claim_code - The claim code to use 
+    
   sharecode.php -
     Shows the appropriate forms for either creating your share code or using another share code.
   
