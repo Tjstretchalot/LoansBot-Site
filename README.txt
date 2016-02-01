@@ -14,6 +14,7 @@ This is the website portion of the LoansBot. It is created from an API perspecti
     
     Optional Params (GET) to Auto-Fill Form:
       user_id    - The user id to claim
+      username   - The username to claim 
       claim_code - The claim code to use 
     
   sharecode.php -
