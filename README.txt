@@ -50,6 +50,7 @@ This is the website portion of the LoansBot. It is created from an API perspecti
       Type: POST
       Params:
         claim_code     - The claim code sent to the reddit account
+        user_id        - The user id that matches the username
         username       - The username of the account
         password       - The password to set for the account
         email          - Email for the account
