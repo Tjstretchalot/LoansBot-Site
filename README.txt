@@ -113,6 +113,7 @@ This is the website portion of the LoansBot. It is created from an API perspecti
         principal_cents               - The exact amount of principal cents of the loans. Default 0 (ignore)
         principal_repayment_cents     - The exact amount of principal_repayment_cents of the loans. Default 0 (ignore)
         unpaid                        - If the loans should be unpaid. 0 for false, 1 for true. Default -1 (ignore)
+        repaid                        - If the loans should have the same principal as principal repayment. 0 for false, 1 for true. Default -1 (ignore)
         
         
         modify                        - States whether the loans that have been returned from the above query are going to be modified. Either 0 (false) or 1 (true). Default 0.
