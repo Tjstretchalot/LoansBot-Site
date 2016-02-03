@@ -218,7 +218,7 @@ Results
     Let <deleted_reason> be a string such as "Loan refunded immediately". Only included for moderators. In the event of a modification, this is the original value.
     Let <created_at> be a utc timestamp in milliseconds such as 1454004926439 or null.
     Let <updated_at> be a utc timestamp in milliseconds such as 1454004926439 or null. This is **NOT** the original value.
-    Let <deleted_at> be a utc timestamp in milliseconds such as 1454004926439 or null. Only included for moderators.
+    Let <deleted_at> be a utc timestamp in milliseconds such as 1454004926439 or null. Only included for moderators. This is **NOT** the original value.
     Let <new_lender_id> be a user id such as 736 or 28. Only included if there was a modification to some part of the loan.
     Let <new_borrower_id> be a user id such as 736 or 28. Only included if there was a modification to some part of the loan.
     Let <new_principal_cents> be an amount of cents such as 10000 or 5000. Only included if there was a modification to some part of the loan.
