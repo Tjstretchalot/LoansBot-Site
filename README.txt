@@ -111,7 +111,7 @@ This is the website portion of the LoansBot. It is created from an API perspecti
         include_deleted               - Either 0 (don't include deleted loans) or 1 (include deleted loans). Default 0
                                         See Results/Loans/UltraCompact, Results/Loans/Compact, Results/Loans/Standard, and Results/Loans/Extended
         principal_cents               - The exact amount of principal cents of the loans. Default 0 (ignore)
-        principal_repayment_cents     - The exact amount of principal_repayment_cents of the loans. Default 0 (ignore)
+        principal_repayment_cents     - The exact amount of principal_repayment_cents of the loans. Default -1 (ignore)
         unpaid                        - If the loans should be unpaid. 0 for false, 1 for true. Default -1 (ignore)
         repaid                        - If the loans should have the same principal as principal repayment. 0 for false, 1 for true. Default -1 (ignore)
         
@@ -125,7 +125,7 @@ This is the website portion of the LoansBot. It is created from an API perspecti
         set_lender_name               - The name of the new lender. Default "" (ignore)
                                         CANNOT be used with set_lender_id 
         set_principal_cents           - Sets the principal cents of the loan. $100 = 10000 cents. Default 0 (ignore)
-        set_principal_repayment_cents - Sets the principal repayment cents of the loan. $100 = 10000 cents. Default 0 (ignore)
+        set_principal_repayment_cents - Sets the principal repayment cents of the loan. $100 = 10000 cents. Default -1 (ignore)
         set_unpaid                    - Sets if the loans are marked as unpaid, 1 for true 0 for false. Default -1 (ignore)
         set_deleted                   - Sets if the loan is deleted, 1 for true, 0 for false. Default -1 (ignore). MUST include set_deleted_reason.
         set_deleted_reason            - Sets the loan deleted message. Default "" (ignore). Minimum length of 5 characters.
