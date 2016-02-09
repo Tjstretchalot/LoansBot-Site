@@ -298,6 +298,7 @@ Results
       
       Response Code: 200 OK
       Response Json Object:
+        Let <thread> be the thread which the $loan command is in.
         Let <lender_name> be a username of a lender, such as "reddituser123".
         Let <borrower_name> be a username of a borrower, such as "reddituser123".
         Let <new_lender_name> be a new username of a lender, such as "reddituser123". Only included if there was a modification to some part of the loan.
@@ -309,6 +310,7 @@ Results
           "loans": [
             {
               (everything from Standard)
+              "thread": "<thread>",
               "lender_name": "<lender_name>",
               "borrower_name": "<borrower_name>",
               "new_lender_name": "<new_lender_name>",
