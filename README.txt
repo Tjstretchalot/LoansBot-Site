@@ -16,7 +16,14 @@ This is the website portion of the LoansBot. It is created from an API perspecti
       user_id    - The user id to claim
       username   - The username to claim 
       claim_code - The claim code to use 
+  
+  reset_password.php - 
+    Shows the appropriate form for resetting your password.
     
+    Params (GET) to Auto-Fill Form (non-optional):
+      user_id - The user id to reset the password on
+      code    - The code that was sent to the reddit account
+   
   sharecode.php -
     Shows the appropriate forms for either creating your share code or using another share code.
   
@@ -37,7 +44,8 @@ This is the website portion of the LoansBot. It is created from an API perspecti
         Results/Success sets the PHPSESSID cookie - The session id is the method of authentication.
         
     request_claim_code.php -
-      Allows the user to request a claim code be sent to his account via the LoansBot.
+      Allows the user to request a claim code be sent to his account via the LoansBot. Will send a reset
+      password link if the account is already claimed.
       
       Type: POST
       Params:
@@ -65,6 +73,18 @@ This is the website portion of the LoansBot. It is created from an API perspecti
       Result:
         Results/Success or Results/Failure 
     
+    reset_password.php -
+      Allows the user to reset the password on an account, returning success/failure
+      
+      Type: POST
+      Params:
+        user_id  - The user id to reset the password on
+        code     - The code used to verify the account
+        password - The new password for the account (min 6. chars)
+        
+      Result:
+        Results/Success or Results/Failure
+        
     request_sharecode.php -
       Allows the user to request a share code be created on his behalf.
       
