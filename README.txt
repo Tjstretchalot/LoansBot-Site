@@ -135,6 +135,12 @@ This is the website portion of the LoansBot. It is created from an API perspecti
         unpaid                        - If the loans should be unpaid. 0 for false, 1 for true. Default -1 (ignore)
         repaid                        - If the loans should have the same principal as principal repayment. 0 for false, 1 for true. Default -1 (ignore)
         
+        include_latest_repayment_at   - Since January 2016, a more robust method to determining when a loan was repaid has been saved. This method only 
+                                        applies to loans which were paid in the normal fashion (ie not via moderator. Those timestamps are saved but are 
+                                        not available at this endpoint). It is recommended to use this timestamp rather than updated_at if it is 
+                                        available. It is not available if the resulting latest_repayment_at is null and principal_repayment_cents is not 
+                                        0. In that case one should fall back to updated_at. Default 0. Cannot be 1 if modify is also 1. Do not trust this
+                                        value if created at is before 2016!
         
         modify                        - States whether the loans that have been returned from the above query are going to be modified. Either 0 (false) or 1 (true). Default 0.
         modify_reason                 - The reason a modification is happening. Minimum length of 5 characters. 
@@ -239,6 +245,7 @@ Results
     Let <created_at> be a utc timestamp in milliseconds such as 1454004926439 or null.
     Let <updated_at> be a utc timestamp in milliseconds such as 1454004926439 or null. This is **NOT** the original value.
     Let <deleted_at> be a utc timestamp in milliseconds such as 1454004926439 or null. Only included for moderators. This is **NOT** the original value.
+    Let <latest_repayment_at> be a utc timestamp in milliseconds such as 1454004926439 or 0. Included only by specific api request. Not available on all loans.
     Let <new_lender_id> be a user id such as 736 or 28. Only included if there was a modification to some part of the loan.
     Let <new_borrower_id> be a user id such as 736 or 28. Only included if there was a modification to some part of the loan.
     Let <new_principal_cents> be an amount of cents such as 10000 or 5000. Only included if there was a modification to some part of the loan.
@@ -273,7 +280,8 @@ Results
           "success": true,
           "loans": [
             [<loan_id>, <lender_id>, <borrower_id>, <principal_cents>, <principal_repayment_cents>, <unpaid>, <created_at>, <updated_at>, <deleted>, <deleted_at>, <deleted_reason>, 
-            <new_lender_id>, <new_borrower_id>, <new_principal_cents>, <new_principal_repayment_cents>, <new_unpaid>, <new_deleted>, <new_deleted_reason>, <new_updated_at>, <new_deleted_at>],
+            <latest_repayment_at>, <new_lender_id>, <new_borrower_id>, <new_principal_cents>, <new_principal_repayment_cents>, <new_unpaid>, <new_deleted>, <new_deleted_reason>,
+            <new_updated_at>, <new_deleted_at>],
             ...
           ]
         }
@@ -299,6 +307,7 @@ Results
               "deleted": <deleted>,
               "deleted_at": <deleted_at>,
               "deleted_reason": "<deleted_reason>",
+              "latest_repayment_at": <latest_repayment_at>,
               "new_lender_id": <new_lender_id>,
               "new_borrower_id": <new_borrower_id>,
               "new_principal_cents": <new_principal_cents>,
